@@ -7,9 +7,9 @@ my_app.secret_key = os.urandom(32)
 @my_app.route('/')
 def root():
 	if session.has_key('name') == True:
-		return render_template("welcome.html", text = session['name'])
+		return redirect(url_for('welcome'))
 	else:
-		return render_template('login.html')
+		return redirect(url_for('login'))
 
 @my_app.route("/response/", methods = ["POST","GET"])
 def resp():
@@ -25,10 +25,18 @@ def resp():
 	session['name'] = "user"
 	return render_template("welcome.html", text = session['name'])
 
+@my_app.route('/welcome')
+def welcome():
+	return render_template('/welcome.html', text = session['name'])
+
+@my_app.route('/login')
+def login():
+	return render_template('/login.html')
+
 @my_app.route("/logout")
 def logout():
 	session.clear()
-	return render_template('login.html')
+	return redirect(url_for('login'))
 
 if __name__ == '__main__':
 	my_app.debug = True
